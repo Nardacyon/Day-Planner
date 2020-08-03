@@ -1,52 +1,62 @@
 var currentDayElement = document.querySelector("#currentDay");
-var timeblockHours = 9;
 var formattedHours;
+
+var milTime = parseInt(moment().format("HH"));
+var startHour = 9;
+
+var index = 0;
 
 var formattedDate = moment().format("dddd, MMMM Do");
 
+var timeArray = ["9 am", "10 am", "11 am", "12 am", "1 pm", "2 pm", "3 pm", "4 pm", "5 pm"]
+
 getCurrentDate();
-createTimeblocks();
 
 function getCurrentDate() {
     currentDayElement.textContent = formattedDate;
 }
 
-
 //This function may have to be edited for moment.js formatting 
-function createTimeblocks() {
-    for (let i = 0; i < timeblockHours; i++) {
-        let hourRows = $("<div>");
-        let hourHeader = $("<div>")
-        let descriptionCol = $("<div>");
-        let textarea = $("<textarea>");
+  for (let i = 0; i < timeArray.length; i++) {
+    let eventRows = $("<div>");
+    eventRows.addClass("row time-block");
 
-        hourRows.addClass("time-block row future");
-        hourHeader.addClass("time-block row hour");
-        descriptionCol.addClass("row description");
-        textarea.addClass("col-8");
+    let hourCol = $("<div>");
+    hourCol.addClass("col-md-2 hour");
+    hourCol.text(timeArray[i]);
 
-        descriptionCol.append(textarea);
+    let eventDesc = $("<div>");
+    let eventText = $("<textarea>");
+    eventText.addClass("description");
 
-        
-        
-        let hour = 9 + i;
-        console.log(hour);
+    eventDesc.append(eventText);
+    
+    eventDesc.addClass("col-md-8");
 
-        if (hour > 12) {
-            hourHeader.text(hour - 12 + " p.m.");
-            hourRows.append(hourHeader);
-            hourRows.append(descriptionCol);
-            $(".container").append(hourRows);
-        } else {
-            hourHeader.text(hour + " a.m.");
-            hourRows.append(hourHeader);
-            hourRows.append(descriptionCol);
-            $(".container").append(hourRows);
-        }
-        console.log(hourRows);
+    let saveBtn = $("<button>");
+    saveBtn.attr("type", "submit");
+    saveBtn.addClass("col-md-2 saveBtn");
+
+    eventRows.append(hourCol);
+    eventRows.append(eventDesc);
+    eventRows.append(saveBtn);
+    $(".container").append(eventRows);
+
+    eventText.attr("data-hour", startHour);
+
+    startHour++;
+  }
+
+$.each($("textarea"), function () {
+    if (milTime === $(this).data("hour")) {
+        $(this).addClass("present")
     }
-//append to th, then th to tr, tr to container
 
+    if (milTime > $(this).data("hour")) {
+        $(this).addClass("past")
+    }
 
-}
-
+    if (milTime < $(this).data("hour")) {
+        $(this).addClass("future")
+    }
+});
