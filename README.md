@@ -1,3 +1,3 @@
 # homework-week-5
 
-![]screenshot.png
+![](screenshot.png)
