@@ -1,22 +1,16 @@
 var currentDayElement = document.querySelector("#currentDay");
-var formattedHours;
-
 var milTime = parseInt(moment().format("HH"));
 var startHour = 9;
-
-var index = 0;
-
 var formattedDate = moment().format("dddd, MMMM Do");
-
 var timeArray = ["9 am", "10 am", "11 am", "12 am", "1 pm", "2 pm", "3 pm", "4 pm", "5 pm"]
 
-getCurrentDate();
+var time;
+var input;
 
-function getCurrentDate() {
-    currentDayElement.textContent = formattedDate;
-}
+//Displays the current date
+currentDayElement.textContent = formattedDate;
 
-//This function may have to be edited for moment.js formatting 
+//Creates the timeblocks with their text according to the objects in timeArray
   for (let i = 0; i < timeArray.length; i++) {
     let eventRows = $("<div>");
     eventRows.addClass("row time-block");
@@ -42,12 +36,38 @@ function getCurrentDate() {
     eventRows.append(saveBtn);
     $(".container").append(eventRows);
 
+
+    //gives the data of startHour so that it can be formatted to be compared with milTime
     eventText.attr("data-hour", startHour);
 
+    //increments so that we can get the hour(military time) and create if statements for color coding the planner
     startHour++;
+
+    if (localStorage.getItem(timeArray[i]) !== null) {
+        eventText.text(localStorage.getItem(timeArray[i]))
+    }
   }
 
+$(".saveBtn").append((`<i class="far fa-save fa-2x"></i>`))
+
+$(".saveBtn").on("click", function (event) {
+    //targets the eventRows div without explicitly calling the var
+    var parent = $(this).parent();
+
+    var textarea = parent.find("textarea");
+    //looks for textarea value and defines it as User input
+    input = textarea.val();
+    var timeEl = parent.find(".hour");
+
+    time = timeEl.text();
+
+    //sets the User input and saves it to the selected time
+    localStorage.setItem(time, input)
+});
+
 $.each($("textarea"), function () {
+
+    //compares milTime, which is the current hour of the day to our planner headings and color codes them
     if (milTime === $(this).data("hour")) {
         $(this).addClass("present")
     }
